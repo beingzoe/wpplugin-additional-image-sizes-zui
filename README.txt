@@ -32,6 +32,14 @@ This plugin is a fork to fix bugs and enhance the functionality of the original 
 3. Message output letting us know the progress of creating new sizes
 4. Using the new image size in the post media uploader
 
+== Roadmap for future releases ==
+
+* Add the ability to delete the actual images created by the site/blog owner
+* Add a link (or maybe the actual generate images button/form) to the Settings > Media page
+** Only show if they edit the boxes after the form is submitted
+* Text domain
+
+
 == Frequently Asked Questions ==
 
 None yet!
