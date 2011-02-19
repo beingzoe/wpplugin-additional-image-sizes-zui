@@ -460,7 +460,7 @@ class ZUI_WpAdditionalImageSizes {
      * success messages. It only makes copies for 10 images at a time.
      *
      * @since       0.1
-     * @uses        ZUI_WpAdditionalImageSizes::ais_get_images()
+     * @uses        ZUI_WpAdditionalImageSizes::getAllImageAttachments()
      * @uses        ZUI_WpAdditionalImageSizes::getWpPredefinedImageSizes()
      * @uses        getAllImageSizes()
      * @uses        apply_filters() WP function
@@ -484,7 +484,7 @@ class ZUI_WpAdditionalImageSizes {
         $max_execution_time = $max_execution_time / 2;
 
         $messages = array();
-        $images = self::ais_get_images();
+        $images = self::getAllImageAttachments();
         $sizes = apply_filters('intermediate_image_sizes', array('thumbnail', 'medium', 'large'));
         $basedir = wp_upload_dir();
         $basedir = $basedir['basedir'];
@@ -538,38 +538,6 @@ class ZUI_WpAdditionalImageSizes {
                             $messages['success'][] = 'RESIZED: "' . $image->post_title . '" to size "' . $size . '"';
 
                         } else {
-                            /*
-                            // Testing to figure out exactly what happens that it can't get dimensions
-                            // It looks like this only is reached if the image is too small to be resized
-                            // by the dimensions given.
-                            // So we are going to run with that assumption until further testing can be done.
-
-                            list($src_w, $src_h, $orig_type) = getimagesize( $image_path );
-                            echo "{$image->post_title} {$size} ({$size_width}x{$size_height}): {$src_w}, {$src_h}, {$orig_type}<br />";
-                            list( $new_w, $new_h ) = wp_constrain_dimensions( $src_w, $src_h, $size_width, $size_height );
-                            echo "new_w {$new_w}, new_h {$new_h}<br />";
-                            */
-
-                            /*
-                            This was failing anytime we hit it so tested as stated above
-                            $result = image_resize(
-                                $image_path,
-                                $size_width,
-                                $size_height,
-                                $size_crop
-                            );
-
-                            //echo "<br />result of attempted resize for {$image->post_title} {$size}<pre>";
-                            //print_r($result);
-                            //echo "</pre><br />";
-
-                            if (is_array($result->errors)) {
-                                foreach ($result->errors as $key => $value) {
-                                    $messages['errors'][] = $image->post_title . ": {$size}: <br />{$key}: {$value[0]}<br />$file" ;
-                                }
-                            }
-                            */
-
                             // Sick of looking at the skipped messages
                             if ( isset($_POST['show_skipped']) ) {
                                 // Assumed the image was too small to be created/resized so just send a tentative success message
@@ -586,7 +554,7 @@ class ZUI_WpAdditionalImageSizes {
                 $now = strtotime('now');
                 $current_execution_time = $now - $start;
                 if ($max_execution_time - $current_execution_time < 2) {
-                    $messages['success'][] = '<strong>Not quite finished yet. We had to stop the script midway because it had been running for too long. Just press the button again to continue where we left off.</strong>';
+                    $messages['success'][] = '<strong>Not quite finished yet.<br />We had to stop the script midway because it had been running for too long.<br />Just press the button again to continue where we left off.</strong>';
                     break;
                 }
             }
@@ -603,8 +571,8 @@ class ZUI_WpAdditionalImageSizes {
      * @uses        get_posts() WP function
      * @return      array|boolean
     */
-    function ais_get_images() {
-                /* Get attachments */
+    function getAllImageAttachments() {
+        /* Get attachments */
         $args = array(
             'post_type' => 'attachment',
             'post_mime_type' => 'image',
@@ -614,9 +582,10 @@ class ZUI_WpAdditionalImageSizes {
         );
         $attachments = get_posts($args);
 
-        if (empty($attachments)) return false;
-
-        else return $attachments;
+        if (empty($attachments))
+            return false;
+        else
+            return $attachments;
     }
 
 }
