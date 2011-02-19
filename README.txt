@@ -1,7 +1,8 @@
 === Additional image sizes (zui) ===
-Author: waltervos, beingzoe
+Contributors: waltervos, beingzoe
+Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes
-Requires at least: 2.5
+Requires at least: 3.0
 Tested up to: 3.0.5
 Stable tag: 0.1
 
@@ -19,17 +20,31 @@ Will also resize the predefined WordPress sizes if the size in Settings > Media 
 * OR "Install Plugins" in the WordPress admin "Plugins > Add New" (search for "additional image sizes zui")
 
 1. Activate the plugin through the `Plugins` menu in WordPress
-1. Now you'll see a new menu item in the `Media` menu where you can add additional sizes and recreate new/changed sizes
+2. Now you'll see a new menu item in the `Media` menu where you can add additional sizes and recreate new/changed sizes
+
+== Screenshots ==
+
+1. First use with no new image sizes created. Menu item added to Media.
+2. Just after adding our first additional image size
+3. Message output letting us know the progress of creating new sizes
+4. Using the new image size in the post media uploader
+
+== Frequently Asked Questions ==
+
+None yet!
+
 
 == Changelog ==
 
 = 0.1 =
 * Major rewrite and release of the original additional sizes plugin
 * Fixed bug where the plugin was attempting to ask WP to resize sizes that didn't exist
+* Fixed bug when WordPress returned an error when the image didn't need resized and the plugin overreacted
 * Fixed E_NOTICE errors being issued for undeclared variables
 * Updated add_menu_page to use newer role and capabilities instead of older numeric roles
 * Separated plugin init/activation from plugin actions so that others could use as stand-alone class
 * Added the ability to resize predefined WordPress image sizes if size edited through Settings > Media
+* Added the ability to show/hide the skipped images message
 
 == Original plugin changelog ==
 
