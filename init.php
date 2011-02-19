@@ -82,11 +82,11 @@ function aiszActivate() {
 function aiszAddAdmin() {
     add_submenu_page(
         'upload.php',
-        'Additional image sizes',
-        'Additional image sizes',
+        'Image sizes',
+        'Image sizes',
         'manage_options',
         'aisz_admin',
-        array('ZUI_WpAdditionalImageSizes','viewOptionsPage')
+        'aiszViewOptionsPage'
     );
 }
 
