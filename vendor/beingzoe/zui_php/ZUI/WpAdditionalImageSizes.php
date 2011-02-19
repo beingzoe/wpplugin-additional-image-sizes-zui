@@ -162,42 +162,54 @@ class ZUI_WpAdditionalImageSizes {
      * @return      string
     */
     public static function appendAttachmentFieldsWithAdditionalSizes($form_fields, $post) {
-        $out = NULL;
-        $size_names = array();
-        $ais_user_sizes = self::getAddtionalSizesFromWpOptions();
-        if (is_array($ais_user_sizes)) {
-            foreach($ais_user_sizes as $key => $value) {
-                $size_names[$key] = $key;
+/*
+        echo "<br />formfields<br /><pre>";
+        print_r($form_fields);
+        echo "</pre><br />";
+
+        echo "<br />post<br /><pre>";
+        print_r($post);
+        echo "</pre><br />";
+*/
+        // Protect from being view in Media editor where there are no sizes
+        if ( isset($form_fields['image-size']) ) {
+            $out = NULL;
+            $size_names = array();
+            $ais_user_sizes = self::getAddtionalSizesFromWpOptions();
+            if (is_array($ais_user_sizes)) {
+                foreach($ais_user_sizes as $key => $value) {
+                    $size_names[$key] = $key;
+                }
             }
-        }
-        foreach ( $size_names as $size => $name ) {
-            $downsize = image_downsize($post->ID, $size);
+            foreach ( $size_names as $size => $name ) {
+                $downsize = image_downsize($post->ID, $size);
 
-            // is this size selectable?
-            $enabled = ( $downsize[3] || 'full' == $size );
-            $css_id = "image-size-{$size}-{$post->ID}";
+                // is this size selectable?
+                $enabled = ( $downsize[3] || 'full' == $size );
+                $css_id = "image-size-{$size}-{$post->ID}";
 
-            // if this size is the default but that's not available, don't select it
-            if ( (isset($checked) && $checked && !$enabled) || !isset($checked) )
-                $checked = FALSE;
+                // if this size is the default but that's not available, don't select it
+                if ( (isset($checked) && $checked && !$enabled) || !isset($checked) )
+                    $checked = FALSE;
 
-            // if $checked was not specified, default to the first available size that's bigger than a thumbnail
-            if ( !$checked && $enabled && 'thumbnail' != $size )
-                $checked = $size;
+                // if $checked was not specified, default to the first available size that's bigger than a thumbnail
+                if ( !$checked && $enabled && 'thumbnail' != $size )
+                    $checked = $size;
 
-            $html = "<div class='image-size-item'><input type='radio' ".( $enabled ? '' : "disabled='disabled'")."name='attachments[$post->ID][image-size]' id='{$css_id}' value='{$size}'".( $checked == $size ? " checked='checked'" : '') ." />";
+                $html = "<div class='image-size-item'><input type='radio' ".( $enabled ? '' : "disabled='disabled'")."name='attachments[$post->ID][image-size]' id='{$css_id}' value='{$size}'".( $checked == $size ? " checked='checked'" : '') ." />";
 
-            $html .= "<label for='{$css_id}'>" . __($name). "</label>";
-            // only show the dimensions if that choice is available
-            if ( $enabled )
-                $html .= " <label for='{$css_id}' class='help'>" . sprintf( __("(%d&nbsp;&times;&nbsp;%d)"), $downsize[1], $downsize[2] ). "</label>";
+                $html .= "<label for='{$css_id}'>" . __($name). "</label>";
+                // only show the dimensions if that choice is available
+                if ( $enabled )
+                    $html .= " <label for='{$css_id}' class='help'>" . sprintf( __("(%d&nbsp;&times;&nbsp;%d)"), $downsize[1], $downsize[2] ). "</label>";
 
-            $html .= '</div>';
+                $html .= '</div>';
 
-            $out .= $html;
-        }
+                $out .= $html;
+            }
+            $form_fields['image-size']['html'] .= $out;
+        } // End protect from Media editor
 
-        $form_fields['image-size']['html'] .= $out;
         return $form_fields;
     }
 
