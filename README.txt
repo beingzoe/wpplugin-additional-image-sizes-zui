@@ -12,7 +12,10 @@ Create additional image sizes for your WordPress site/blog as well resize the pr
 
 Create additional image sizes (in addition to the predefined WordPress
 defaults thumbnail, medium and large size that are default) for your WordPress site/blog.
-Will also resize the predefined WordPress sizes if the size in Settings > Media has been edited.
+
+It will also resize the predefined WordPress sizes if the size in Settings > Media has been edited.
+
+This plugin is a fork to fix bugs and enhance the functionality of the original Additional Image Sizes plugin.
 
 == Installation ==
 
