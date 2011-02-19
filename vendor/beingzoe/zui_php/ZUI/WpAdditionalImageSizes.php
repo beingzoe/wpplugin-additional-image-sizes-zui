@@ -517,8 +517,8 @@ class ZUI_WpAdditionalImageSizes {
                     // Need to test this against an image that could defy this logic (or a size not created because it was too small)
                     if ( ( !isset($metadata['sizes'][$size]) && !array_key_exists($size, $wp_image_sizes) ) ||
                         (
-                            (isset($metadata['sizes'][$size]) && $metadata['sizes'][$size]['width'] >= $metadata['sizes'][$size]['height'] && $metadata['sizes'][$size]['width'] != $all_image_sizes[$size]['size_w'])
-                            || (isset($metadata['sizes'][$size]) && $metadata['sizes'][$size]['height'] >= $metadata['sizes'][$size]['width'] && $metadata['sizes'][$size]['height'] != $all_image_sizes[$size]['size_h'])
+                            (isset($metadata['sizes'][$size]) && !empty($all_image_sizes[$size]['size_w']) && $metadata['sizes'][$size]['width'] > $metadata['sizes'][$size]['height'] && $metadata['sizes'][$size]['width'] != $all_image_sizes[$size]['size_w'])
+                            || (isset($metadata['sizes'][$size]) && !empty($all_image_sizes[$size]['size_h']) && $metadata['sizes'][$size]['height'] > $metadata['sizes'][$size]['width'] && $metadata['sizes'][$size]['height'] != $all_image_sizes[$size]['size_h'])
                         ) )
                         {
                         $image_path = $basedir . '/' . $file;
@@ -536,20 +536,45 @@ class ZUI_WpAdditionalImageSizes {
                             $messages['success'][] = 'RESIZED: "' . $image->post_title . '" to size "' . $size . '"';
 
                         } else {
+                            /*
+                            // Testing to figure out exactly what happens that it can't get dimensions
+                            // It looks like this only is reached if the image is too small to be resized
+                            // by the dimensions given.
+                            // So we are going to run with that assumption until further testing can be done.
+
+                            list($src_w, $src_h, $orig_type) = getimagesize( $image_path );
+                            echo "{$image->post_title} {$size} ({$size_width}x{$size_height}): {$src_w}, {$src_h}, {$orig_type}<br />";
+                            list( $new_w, $new_h ) = wp_constrain_dimensions( $src_w, $src_h, $size_width, $size_height );
+                            echo "new_w {$new_w}, new_h {$new_h}<br />";
+                            */
+
+                            /*
+                            This was failing anytime we hit it so tested as stated above
                             $result = image_resize(
-                                $image_path, get_option("{$size}_size_w"),
-                                get_option("{$size}_size_h"),
-                                get_option("{$size}_crop")
+                                $image_path,
+                                $size_width,
+                                $size_height,
+                                $size_crop
                             );
+
+                            //echo "<br />result of attempted resize for {$image->post_title} {$size}<pre>";
+                            //print_r($result);
+                            //echo "</pre><br />";
+
                             if (is_array($result->errors)) {
                                 foreach ($result->errors as $key => $value) {
-                                    $messages['errors'][] = $key . ': ' . $value[0];
+                                    $messages['errors'][] = $image->post_title . ": {$size}: <br />{$key}: {$value[0]}<br />$file" ;
                                 }
                             }
+                            */
+
+                            // Assumed the image was too small to be created/resized so just send a tentative success message
+                            $messages['success'][] = 'SKIPPED: "' . $image->post_title . '" is already smaller than the requested size "' . $size . '"';
+
                         }
                     } else {
-                        $messages['success'][] =  'SKIPPED: "' . $size . '" already exists for "' . $image->post_title . '"';
-                        // zoe commented this out of the original when he first discovered a problem with resized images
+                        if ( !array_key_exists($size, $wp_image_sizes) )
+                            $messages['success'][] =  'SKIPPED: "' . $size . '" already exists for "' . $image->post_title . '"';
                     }
                 }
                 $now = strtotime('now');
