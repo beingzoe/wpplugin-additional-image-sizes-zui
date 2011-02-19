@@ -322,6 +322,8 @@ class ZUI_WpAdditionalImageSizes {
                 <input type="hidden" name="regenerate_images" value="true" />
                 <p class="submit">
                     <input type="submit" class="button-primary" value="<?php _e('Generate copies of new sizes'); ?>" />
+                    <br /><br />
+                    <input type="checkbox" name="show_skipped" id="show_skipped" value="1" style="margin-left: 8px;" /> <label for="show_skipped">Show skipped image messages</label>
                 </p>
             </form>
 <?php
@@ -568,13 +570,17 @@ class ZUI_WpAdditionalImageSizes {
                             }
                             */
 
-                            // Assumed the image was too small to be created/resized so just send a tentative success message
-                            $messages['success'][] = 'SKIPPED: "' . $image->post_title . '" is already smaller than the requested size "' . $size . '"';
-
+                            // Sick of looking at the skipped messages
+                            if ( isset($_POST['show_skipped']) ) {
+                                // Assumed the image was too small to be created/resized so just send a tentative success message
+                                $messages['success'][] = 'SKIPPED: "' . $image->post_title . '" is already smaller than the requested size "' . $size . '"';
+                            }
                         }
                     } else {
-                        if ( !array_key_exists($size, $wp_image_sizes) )
+                        // Sick of looking at the skipped messages and we all know the predefined sizes exist anyway
+                        if ( isset($_POST['show_skipped']) && !array_key_exists($size, $wp_image_sizes) ) {
                             $messages['success'][] =  'SKIPPED: "' . $size . '" already exists for "' . $image->post_title . '"';
+                        }
                     }
                 }
                 $now = strtotime('now');
