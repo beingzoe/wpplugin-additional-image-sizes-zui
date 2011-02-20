@@ -47,6 +47,11 @@ None yet!
 
 == Changelog ==
 
+= 0.1.1 =
+
+* Updated option that stores the serialized options from a kst namespaced id
+* Removed extraneous comments and unused code and other minor cleanup
+
 = 0.1 =
 * Major rewrite and release of the original additional sizes plugin
 * Fixed bug where the plugin was attempting to ask WP to resize sizes that didn't exist

@@ -3,7 +3,7 @@
 Plugin Name:    Additional Image Sizes (zui)
 Plugin URI:     http://beingzoe.com/zui/wordpress/additional-image-sizes/
 Description:    Library of awesomeness and a "reset" to create a sensible starting point
-Version:        0.1
+Version:        0.1.1
 Author:         zoe somebody, Walter Vos
 Author URI:     http://beingzoe.com/
 License:        MIT
@@ -15,6 +15,8 @@ License:        MIT
  * @license		http://en.wikipedia.org/wiki/MIT_License The MIT License
  * @package     ZUI
  * @subpackage  WordPress
+ * @version     0.1.1
+ * @since       0.1
  * @uses        ZUI_WpAdditionalImageSizes class
 */
 
@@ -26,10 +28,6 @@ if ( !is_admin() )
  * Class to create and manage additional image sizes for post/pages/custom
  *
  * @since       0.1
- * @uses        ZUI_WpAdminPages
- * @uses        ZUI_FormHelper
- * @see         WpAdminPages.php
- * @see         FormHelper.php
 */
 require_once dirname(__FILE__) . '/vendor/beingzoe/zui_php/ZUI/WpAdditionalImageSizes.php';
 
