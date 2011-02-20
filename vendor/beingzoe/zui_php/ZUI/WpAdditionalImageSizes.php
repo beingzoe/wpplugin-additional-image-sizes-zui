@@ -484,9 +484,9 @@ class ZUI_WpAdditionalImageSizes {
             foreach ($_POST['ais_size_delete'] as $delete) {
                 // $delete holds the size name
                 unset($ais_user_sizes[$delete]);
-                delete_option("{$delete}_size_w", $_POST['ais_size_w']);
-                delete_option("{$delete}_size_h", $_POST['ais_size_h']);
-                delete_option("{$delete}_crop", $size_crop);
+                delete_option("{$delete}_size_w");
+                delete_option("{$delete}_size_h");
+                delete_option("{$delete}_crop");
                 $messages['success'][] = "The size named <strong>$delete</strong> was deleted";
             }
             update_option('aisz_sizes', $ais_user_sizes);
