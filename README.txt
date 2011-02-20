@@ -4,7 +4,7 @@ Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes
 Requires at least: 3.0
 Tested up to: 3.0.5
-Stable tag: 0.1
+Stable tag: 0.1.1
 
 Create additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
