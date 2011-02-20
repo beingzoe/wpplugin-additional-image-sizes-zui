@@ -2,8 +2,8 @@
 /**
 Plugin Name:    Additional Image Sizes (zui)
 Plugin URI:     http://beingzoe.com/zui/wordpress/additional-image-sizes/
-Description:    Library of awesomeness and a "reset" to create a sensible starting point
-Version:        0.1.1
+Description:    Create custom image sizes and resize predefined WordPress sizes if necessary
+Version:        0.1.2
 Author:         zoe somebody, Walter Vos
 Author URI:     http://beingzoe.com/
 License:        MIT
@@ -11,11 +11,11 @@ License:        MIT
  * @author      Walter Vos
  * @link        http://www.waltervos.com/
  * @author		zoe somebody
- * @link        http://beingzoe.com/zui/wordpress/kitchen_sink/
+ * @link        http://beingzoe.com/
  * @license		http://en.wikipedia.org/wiki/MIT_License The MIT License
  * @package     ZUI
  * @subpackage  WordPress
- * @version     0.1.1
+ * @version     0.1.2
  * @since       0.1
  * @uses        ZUI_WpAdditionalImageSizes class
 */
