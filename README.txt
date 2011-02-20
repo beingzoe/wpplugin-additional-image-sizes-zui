@@ -122,3 +122,5 @@ Very first release, features are:
 == Upgrade Notice ==
 
 = 0.1.2 =
+
+Major improvment to how new image sizes are created.
