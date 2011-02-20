@@ -4,7 +4,7 @@ Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes
 Requires at least: 3.0
 Tested up to: 3.0.5
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 
 Create additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
@@ -70,10 +70,34 @@ settings is included on the page.
 
 == Frequently Asked Questions ==
 
-None yet!
+= Is there a way to automate the creation of new image sizes instead of doing batches manually? =
 
+We are looking into this. The problem is that once this script starts running it is incredibly taxing
+on the server. It would be inappropriate to let this script run for very long especially on shared hosting.
+
+However because of our fabulous tester Ami who has over 23,000 images on a particular server we are
+looking into options to make the creation of new sizes less time consuming.
+
+
+== Upgrade Notice ==
+
+= 0.1.4 =
+
+Minor/Major bug fixed (depending on how you look at it ;) preventing WordPress sizes from resizing unless a custom size was added.
+
+= 0.1.3 =
+
+Added ability to choose what size(s) are checked instead of just all of them!
+
+= 0.1.2 =
+
+Major improvment to how new image sizes are created.
 
 == Changelog ==
+
+= 0.1.4 =
+
+* Fixed bug preventing WordPress sizes from resizing unless a custom size was added
 
 = 0.1.3 =
 
@@ -126,12 +150,3 @@ Very first release, features are:
 *   Generate copies of additional image sizes.
 *   Use the additional sizes in your posts or pages from the `Add an Image` screen.
 
-== Upgrade Notice ==
-
-= 0.1.3 =
-
-Added ability to choose what size(s) are checked instead of just all of them!
-
-= 0.1.2 =
-
-Major improvment to how new image sizes are created.
