@@ -4,7 +4,7 @@ Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes
 Requires at least: 3.0
 Tested up to: 3.0.5
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 
 Create additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
@@ -25,12 +25,39 @@ This plugin is a fork to fix bugs and enhance the functionality of the original 
 1. Activate the plugin through the `Plugins` menu in WordPress
 2. Now you'll see a new menu item in the `Media` menu where you can add additional sizes and recreate new/changed sizes
 
+
+== How to use ==
+
+= Create a new image size =
+
+At the top of the Additional Images Sizes options page you will see a matrix of your custom image sizes.
+On first load it will be empty and you will just see a form at the "bottom" of the matrix.
+
+1. Enter a name, width (integer), height (integer), and choose whether it should be cropped
+2. Click Save Changes
+
+= Create missing/changed image sizes =
+
+Once you have created a new image size (or edited the predefined WordPress image sizes in Settings > Media) you
+will need to create the new image size(s) for previously uploaded images. New images will automatically be created
+in all sizes.
+
+1. Click the "Generate copies of new sizes button"
+
+There are some optional settings you can adjust depending on your server, how many new sizes you are attempting to
+do at once, and which way the wind is blowing. We have attempted to set these to work optimally for most folks. But
+if your setup is a little better than most, only doing one image size at a time, or don't have too many images on the
+server already try turning these up. Conversely if you are having problems turn these down. Explanation of these
+settings is included on the page.
+
+
 == Screenshots ==
 
 1. First use with no new image sizes created. Menu item added to Media.
 2. Just after adding our first additional image size
 3. Message output letting us know the progress of creating new sizes
 4. Using the new image size in the post media uploader
+
 
 == Roadmap for future releases ==
 
@@ -47,6 +74,13 @@ None yet!
 
 == Changelog ==
 
+= 0.1.2 =
+
+* Changed generate new images to run in "batches" set by the site/blog owner
+* Added option to extend the time limit for script processing by up to 60 seconds
+* Special thanks to Ami for testing things out with her 23000+ images ;)
+* Added more thorough messages to let the site/blog owner know what is going on
+
 = 0.1.1 =
 
 * Updated option that stores the serialized options from a kst namespaced id
@@ -61,6 +95,7 @@ None yet!
 * Separated plugin init/activation from plugin actions so that others could use as stand-alone class
 * Added the ability to resize predefined WordPress image sizes if size edited through Settings > Media
 * Added the ability to show/hide the skipped images message
+
 
 == Original plugin changelog ==
 
@@ -83,3 +118,7 @@ Very first release, features are:
 *   Adding additional image sizes.
 *   Generate copies of additional image sizes.
 *   Use the additional sizes in your posts or pages from the `Add an Image` screen.
+
+== Upgrade Notice ==
+
+= 0.1.2 =
