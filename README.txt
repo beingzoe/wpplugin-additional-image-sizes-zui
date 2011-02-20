@@ -4,7 +4,7 @@ Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes
 Requires at least: 3.0
 Tested up to: 3.0.5
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 
 Create additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
@@ -13,7 +13,7 @@ Create additional image sizes for your WordPress site/blog as well resize the pr
 Create additional image sizes (in addition to the predefined WordPress
 defaults thumbnail, medium and large size that are default) for your WordPress site/blog.
 
-It will also resize the predefined WordPress sizes if the size in Settings > Media has been edited.
+It will also resize the predefined WordPress sizes if the size(s) in Settings > Media have been edited.
 
 This plugin is a fork to fix bugs and enhance the functionality of the original Additional Image Sizes plugin.
 
@@ -55,8 +55,9 @@ settings is included on the page.
 
 1. First use with no new image sizes created. Menu item added to Media.
 2. Just after adding our first additional image size
-3. Message output letting us know the progress of creating new sizes
-4. Using the new image size in the post media uploader
+3. Settings for creating new/missing image sizes
+4. Message output letting us know the progress of creating new sizes
+5. Using the new image size in the post media uploader
 
 
 == Roadmap for future releases ==
@@ -73,6 +74,12 @@ None yet!
 
 
 == Changelog ==
+
+= 0.1.3 =
+
+* Added ability to choose what size(s) to check instead of just all (Thanks Ami)
+* Improved database cleanup - now removes necessary WP unserialized size options on delete size
+* Still more helpful messages to let the site/blog owner know what is going on
 
 = 0.1.2 =
 
@@ -120,6 +127,10 @@ Very first release, features are:
 *   Use the additional sizes in your posts or pages from the `Add an Image` screen.
 
 == Upgrade Notice ==
+
+= 0.1.3 =
+
+Added ability to choose what size(s) are checked instead of just all of them!
 
 = 0.1.2 =
 
