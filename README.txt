@@ -3,8 +3,8 @@ Contributors: waltervos, beingzoe
 Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes, create image sizes, delete images
 Requires at least: 3.0
-Tested up to: 3.0.5
-Stable tag: 0.1.5
+Tested up to: 3.1
+Stable tag: 0.1.6
 
 Create and delete additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
@@ -108,8 +108,37 @@ on the server. It would be inappropriate to let this script run for very long es
 However because of our fabulous tester Ami who has over 23,000 images on a particular server we are
 looking into options to make the creation of new sizes less time consuming.
 
+= Why are there so many images AISZ wants to delete the first time I run "Delete images..." =
+
+The native method of adding images via the WordPress api uses two functions in particular for theme and
+plugin developers to add new sizes.  `set_post_thumbnail_size()` and `add_image_size()`. We know the name
+of the 'post-thumbnail' size and protect that size by default. However, if you were
+using a theme or plugin that used `add_image_size()` but have since switched to a theme or plugin that does
+not use those named sizes of image files will still exist on your server but no longer be referenced except in the
+attachment metadata. Unfortunately at this time we have no way of telling the difference between those sizes
+you may need later and sizes you have created and deleted. If you think you might switch back to one of those
+themes or plugins you should not use the delete feature of this plugin OR use on the workaround provided below.
+
+However, there is a simple workaround if you are comfortable editing your theme functions.php. By simply
+adding `add_image_size( 'NAME OF IMAGE SIZE', width, height, TRUE|FALSE )` you will effectively hide it from this plugin.
+The downside to this method is that you really need to match the original name, width, height, and crop setting for it
+to be truly useful if you ever switch back to the theme or plugin that needed those sizes. If these were larger images
+then you are needlessly storing excessive image sizes for possibly no reason.
+
+Alternatively you can add that named size to your custom list of sizes and set it to a really small image size (e.g. 10x10 cropped).
+This will allow accomplish the same thing as the above workaround except it will only be creating a tiny extra image size.
+Then if you ever switch back to the the theme or plugin that uses those sizes (they will appear italicized and undeletable in your
+custom size list) you can simply recreate the appropriate sizes for the `add_image_size()` sizes and then delete it from your
+custom list again.
+
+Up to you.
+
 
 == Upgrade Notice ==
+
+= 0.1.6 =
+
+Protects 'post-thumbnail' size even if not present in current install! Minor bug fixes. Tested up to WP 3.1.
 
 = 0.1.5 =
 
@@ -128,6 +157,12 @@ Added ability to choose what size(s) are checked instead of just all of them!
 Major improvment to how new image sizes are created.
 
 == Changelog ==
+
+= 0.1.6 =
+
+* Fixed minor bug causing E_NOTICE errors when the global $_wp_additional_image_sizes was empty
+* Added protection for known size 'post-thumbnail' even if that size is not present in the current install
+* Added the name of size being deleted to delete message output
 
 = 0.1.5 =
 
