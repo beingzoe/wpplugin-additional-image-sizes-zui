@@ -1,21 +1,28 @@
 === Additional image sizes (zui) ===
 Contributors: waltervos, beingzoe
 Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
-Tags: images, image management, image sizes
+Tags: images, image management, image sizes, create image sizes, delete images
 Requires at least: 3.0
 Tested up to: 3.0.5
-Stable tag: 0.1.4
+Stable tag: 0.1.5
 
-Create additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
+Create and delete additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
 
 == Description ==
 
 Create additional image sizes (in addition to the predefined WordPress
 defaults thumbnail, medium and large size that are default) for your WordPress site/blog.
-
 It will also resize the predefined WordPress sizes if the size(s) in Settings > Media have been edited.
 
-This plugin is a fork to fix bugs and enhance the functionality of the original Additional Image Sizes plugin.
+Delete images from your upload directory in size(s) you are no longer using.
+
+Simulate creating/deleting images before you actually do it to see what the results will be.
+
+This plugin is a fork to fix bugs and enhance the functionality of the original Additional Image Sizes plugin. If
+you were using the original plugin this new version will import your old settings (as of version 0.1.5).
+
+If you are a WordPress developer this plugins is also available as a ready-to-go appliance (module) in the Kitchen Sink HTML 5 Base
+platform/framework development plugin. Learn more at github: https://github.com/beingzoe/wpplugin-kitchen-sink-html5-base
 
 == Installation ==
 
@@ -23,7 +30,7 @@ This plugin is a fork to fix bugs and enhance the functionality of the original 
 * OR "Install Plugins" in the WordPress admin "Plugins > Add New" (search for "additional image sizes zui")
 
 1. Activate the plugin through the `Plugins` menu in WordPress
-2. Now you'll see a new menu item in the `Media` menu where you can add additional sizes and recreate new/changed sizes
+2. Now you'll see a new menu item in the `Media` menu where you can add additional sizes, create new/changed sizes, and delete images in unused sizes
 
 
 == How to use ==
@@ -44,31 +51,54 @@ in all sizes.
 
 1. Click the "Generate copies of new sizes button"
 
-There are some optional settings you can adjust depending on your server, how many new sizes you are attempting to
+Optionally choose what size(s) to check.
+
+There are other optional settings you can adjust depending on your server, how many new sizes you are attempting to
 do at once, and which way the wind is blowing. We have attempted to set these to work optimally for most folks. But
 if your setup is a little better than most, only doing one image size at a time, or don't have too many images on the
 server already try turning these up. Conversely if you are having problems turn these down. Explanation of these
 settings is included on the page.
 
+= Deleting images for deleted sizes =
+
+1. Click "Show form"
+2. Click "Delete images of deleted sizes"
+
+By default "Check but don't actually delete" is selected and this will only show you what WOULD be deleted. If you are sure
+the results are what you want to delete then uncheck "Check but don't actually delete" and run it again. The physical image
+files will be removed from the server and your attachment metadate updated. There is no undo. Use at your own risk.
+
 
 == Screenshots ==
 
-1. First use with no new image sizes created. Menu item added to Media.
-2. Just after adding our first additional image size
+1. First use with no custom image sizes created. Menu item added to Media.
+2. Just after adding our first additional custom image size
 3. Settings for creating new/missing image sizes
-4. Message output letting us know the progress of creating new sizes
-5. Using the new image size in the post media uploader
+4. Settings for deleting images for deleted sizes
+5. Message output showing progress of creating new sizes (or simulating in this case)
+6. Message output showing the images deleted that time around
+7. Inserting new image sizes into post/page/custom
 
 
 == Roadmap for future releases ==
 
-* Add the ability to delete the actual images created by the site/blog owner
+* Add ability to deleted UNUSED images (uploaded but not inserted)
+* Add ability to edit your custom sizes
+* Ajaxify and see if we can automate a little bit with some javascript
 * Add a link (or maybe the actual generate images button/form) to the Settings > Media page
 ** Only show if they edit the boxes after the form is submitted
-* Text domain
+* Text domain / Internationalization
 
 
 == Frequently Asked Questions ==
+
+= What are the italicized undeletable images sizes in my list? e.g. post-thumbnail =
+
+With the addition of the featured image post thumbnail feature WordPress introduced new functions for
+theme and plugin developers to use to add new image sizes. Sizes added this way do not show up to
+be inserted in posts/pages/custom but are created everytime an image is uploaded. We list them here
+to let you know they exist and for now to let you know we are aware of them and will not attempt to
+delete or edit them in anyway.
 
 = Is there a way to automate the creation of new image sizes instead of doing batches manually? =
 
@@ -80,6 +110,10 @@ looking into options to make the creation of new sizes less time consuming.
 
 
 == Upgrade Notice ==
+
+= 0.1.5 =
+
+Major feature additions! Minor bug fixes. This is the tool you REALLY wanted ;)
 
 = 0.1.4 =
 
@@ -94,6 +128,25 @@ Added ability to choose what size(s) are checked instead of just all of them!
 Major improvment to how new image sizes are created.
 
 == Changelog ==
+
+= 0.1.5 =
+
+* Added ability to check but not actually resize images (simulates image_resize)
+* Added ability to physically delete images and clean attachment metadata of deleted sizes
+* Generate images form saves values (added cookie)
+* Added a "continue link" to the messages to make continuing less arduous for lot's of images
+* Renamed "RESIZED" to "CREATED" in output log to better express what is happening
+* Added ability to "replace" predefined WordPress sizes instead of creating new ones
+* Added acknowledgment and protection for set_post_thumbnail_size() and add_image_size() images
+* Added an import of old plugin sizes if no sizes exist with new plugin (sorry if you were an early adopter ;)
+* Cleaned up page a bit and added javascript to show/hide advanced settings
+* Improved readability of media size insert image when many custom sizes are present
+* Fixed bug where last inserted image size was not being used as the default next time (thanks Ami)
+* Fixed bug where non-numeric values could be entered into width/height
+* Added notes about leaving width/height blank for proportional resize/crop
+* Optimized code a bit
+* Renamed internal class members more consistently
+* Abstracted things in preparation for ajaxifying
 
 = 0.1.4 =
 

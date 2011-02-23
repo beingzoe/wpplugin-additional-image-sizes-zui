@@ -3,7 +3,7 @@
 Plugin Name:    Additional Image Sizes (zui)
 Plugin URI:     http://beingzoe.com/zui/wordpress/additional-image-sizes/
 Description:    Create custom image sizes and resize predefined WordPress sizes if necessary
-Version:        0.1.4
+Version:        0.1.5
 Author:         zoe somebody, Walter Vos
 Author URI:     http://beingzoe.com/
 License:        MIT
@@ -15,9 +15,10 @@ License:        MIT
  * @license		http://en.wikipedia.org/wiki/MIT_License The MIT License
  * @package     ZUI
  * @subpackage  WordPress
- * @version     0.1.4
+ * @version     0.1.5
  * @since       0.1
  * @uses        ZUI_WpAdditionalImageSizes class
+ * @todo        text domain
 */
 
 if ( !is_admin() )
@@ -65,6 +66,12 @@ function registerWpAisSettings() {
  * @uses        update_option() WP function
 */
 function aiszActivate() {
+    // Import original plugin - since 0.1.5
+    $ais_sizes = get_option('ais_sizes'); // original settings
+    $aisz_sizes = get_option('aisz_sizes'); // new settings
+    if ( !empty($ais_sizes) && empty($aisz_sizes) )
+        update_option('aisz_sizes', $ais_sizes);
+    setcookie('aisz_generate_form', '', time()-60000);
     update_option('aisz_activated', true);
 }
 
@@ -73,12 +80,14 @@ function aiszActivate() {
  * This function creates the page to manage the additional image sizes
  *
  * @since       0.1
+ * @uses        aiszPrintScripts() as callback
+ * @uses        aiszPrintStyles() as callback
+ * @uses        ZUI_WpAdditionalImageSizes::viewOptionsPage() as view page callback
  * @uses        add_submenu_page() WP function
  * @uses        aiszActivationNotice()
- * @uses        ZUI_WpAdditionalImageSizes::viewOptionsPage() as view page callback
 */
 function aiszAddAdmin() {
-    add_submenu_page(
+    $page = add_submenu_page(
         'upload.php',
         'Image sizes',
         'Image sizes',
@@ -86,8 +95,42 @@ function aiszAddAdmin() {
         'aisz_admin',
         'aiszViewOptionsPage'
     );
+    add_action('admin_print_scripts-' . $page, 'aiszPrintScripts');
+    add_action('admin_print_styles-' . $page, 'aiszPrintStyles');
 }
 
+
+/**
+ * Enqueue javascript file
+ *
+ * @since       0.1.5
+ * @uses        plugins_url() WP function
+ * @uses        wp_enqueue_script() WP function
+*/
+function aiszPrintScripts() {
+    $base_path = plugins_url("vendor/beingzoe/zui_php/assets/javascripts/WpAdditionalImageSizes.js", __FILE__);
+    wp_enqueue_script('wpadditionalimagesizes', $base_path, array( 'jquery' ) , '0.1', true);
+}
+
+
+/**
+ * Echoes link to stylesheet
+ *
+ * @since       0.1.5
+ * @uses        plugins_url() WP function
+*/
+function aiszPrintStyles() {
+    $base_path = plugins_url("vendor/beingzoe/zui_php/assets/stylesheets/WpAdditionalImageSizes.css", __FILE__);
+    echo "<link rel='stylesheet' href='{$base_path}' type='text/css' />\n";
+}
+
+
+/**
+ * Callback for viewing this plugin admin page
+ *
+ * @since       0.1
+ * @uses        ZUI_WpAdditionalImageSizes::viewOptionsPage()
+*/
 function aiszViewOptionsPage() {
     echo "<div class='wrap'>";
     echo "<h2>Additional image sizes</h2>";
