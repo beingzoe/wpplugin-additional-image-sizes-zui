@@ -164,7 +164,7 @@ Major improvment to how new image sizes are created.
 
 = 0.1.7 =
 
-* Fixed issue with some installations where attempt to save cookie triggered "headers sent error".
+* Fixed issue with some installations where attempt to save cookie triggered 'headers sent error'.
 
 = 0.1.6 =
 
