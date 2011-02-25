@@ -4,9 +4,9 @@ Donate Link: http://en.wikipedia.org/wiki/Pay_it_forward
 Tags: images, image management, image sizes, create image sizes, delete images
 Requires at least: 3.0
 Tested up to: 3.1
-Stable tag: 0.1.6
+Stable tag: 0.1.7
 
-Create and delete additional image sizes for your WordPress site/blog as well resize the predefined WordPress sizes.
+Create and delete additional image sizes for your WordPress site/blog as well as resize the predefined WordPress sizes.
 
 == Description ==
 
@@ -21,7 +21,7 @@ Simulate creating/deleting images before you actually do it to see what the resu
 This plugin is a fork to fix bugs and enhance the functionality of the original Additional Image Sizes plugin. If
 you were using the original plugin this new version will import your old settings (as of version 0.1.5).
 
-If you are a WordPress developer this plugins is also available as a ready-to-go appliance (module) in the Kitchen Sink HTML 5 Base
+If you are a WordPress developer this plugin is also available as a ready-to-go appliance (module) in the Kitchen Sink HTML 5 Base
 platform/framework development plugin. Learn more at github: https://github.com/beingzoe/wpplugin-kitchen-sink-html5-base
 
 == Installation ==
@@ -136,6 +136,10 @@ Up to you.
 
 == Upgrade Notice ==
 
+= 0.1.7 =
+
+Fixes issue with some installations where attempt to save cookie triggered "headers sent error"
+
 = 0.1.6 =
 
 Protects 'post-thumbnail' size even if not present in current install! Minor bug fixes. Tested up to WP 3.1.
@@ -157,6 +161,10 @@ Added ability to choose what size(s) are checked instead of just all of them!
 Major improvment to how new image sizes are created.
 
 == Changelog ==
+
+= 0.1.7 =
+
+* Fixed issue with some installations where attempt to save cookie triggered "headers sent error".
 
 = 0.1.6 =
 
