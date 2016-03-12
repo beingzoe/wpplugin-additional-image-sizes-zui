@@ -2,8 +2,7 @@
 /**
  * Additional Image Sizes for WordPress Image Media
  *
- * Create and delete additional image sizes (in addition to the predefined WordPress
- * defaults thumbnail, medium and large size that are default) for your WordPress site/blog.
+ * Create and delete additional image sizes (in addition to the predefined WordPress defaults).
  * Will also resize the predefined WordPress sizes if the size in Media > Settings has been edited.
  *
  * This plugin is a fork/rewrite of Additional image sizes created by Walter Vos
@@ -55,7 +54,7 @@ add_filter('attachment_fields_to_edit', array('ZUI_WpAdditionalImageSizes', 'app
 
 /**
  * Static methods for creating and maintaining additional images sizes
- * Also resizes WordPress predefined image sizes (thumbnail, medium, large)
+ * Also resizes WordPress predefined image sizes (thumbnail, medium, medium-large, large)
  * if the size has changed.
  *
  * @version       0.1
@@ -69,6 +68,7 @@ class ZUI_WpAdditionalImageSizes {
     */
     protected static $_images_regenerated_this_attempt = 0;
     protected static $_images_regenerate_from_offset = 0;
+    protected static $skipAddSizesToWpIntermediateSizes = FALSE ;
     /**#@-*/
 
 
@@ -95,13 +95,21 @@ class ZUI_WpAdditionalImageSizes {
      * This function returns WordPress' predefined image sizes
      *
      * @since       0.1
-     * @return      array
      * @uses        get_option() WP function
+     * @param       optional boolean $just_names
+     * @param       optional boolean $include_site_icon
+     * @return      array
     */
-    public static function getSizesWp() {
-        static $sizes_wp = NULL; // cache this - speed things up
-        if ( NULL === $sizes_wp) {
-            $wp_size_names = array('thumbnail', 'medium', 'large' );
+    public static function getSizesWp($just_names = FALSE, $include_site_icon = FALSE) {
+		static $wp_size_names = array();
+        static $wp_size_names_including_site_icon = array();
+        static $sizes_wp = NULL;
+		static $sizes_wp_including_site_icon = NULL;
+        if ( NULL === $sizes_wp ) {
+            global $wp_site_icon, $_wp_additional_image_sizes;
+            self::$skipAddSizesToWpIntermediateSizes = TRUE ;
+            $wp_size_names = array_diff( get_intermediate_image_sizes(), array_keys( $_wp_additional_image_sizes ) ) ;
+            self::$skipAddSizesToWpIntermediateSizes = FALSE ;
             $sizes_wp = array();
             foreach ( $wp_size_names as $size_name ) {
                 $sizes_wp[$size_name] = array(
@@ -110,7 +118,19 @@ class ZUI_WpAdditionalImageSizes {
                         'crop'      => get_option("{$size_name}_crop")
                     );
             }
+            $sizes_wp_including_site_icon = $sizes_wp;
+            $wp_size_names_including_site_icon = $wp_size_names;
+            foreach( $wp_site_icon->intermediate_image_sizes() as $icon ){
+                $wp_size_names_including_site_icon[] = $icon;
+                $sizes_wp_including_site_icon[$icon] = array( 'size_w' => false, 'size_h' => false, 'crop' => true);
+                if ( preg_match( '/-([0-9]*)$/', $icon, $match ) ) $sizes_wp_including_site_icon[$icon]['size_h'] = $sizes_wp_including_site_icon[$icon]['size_w'] = $match[1] ;
+            }
         }
+        if( $include_site_icon ){
+            if( $just_names ) return implode( ', ', $wp_size_names_including_site_icon );
+            return $sizes_wp_including_site_icon;
+        }
+        if( $just_names ) return implode( ', ', $wp_size_names ) ;
         return $sizes_wp;
     }
 
@@ -120,16 +140,13 @@ class ZUI_WpAdditionalImageSizes {
      * for all images (predefined WP and User defined)
      *
      * @since       0.1
+     * @param       optional boolean $include_site_icon
      * @return      array
      * @uses        ZUI_WpAdditionalImageSizes::getSizesWp()
      * @uses        ZUI_WpAdditionalImageSizes::getSizesCustom()
     */
-    public static function getAllImageSizes() {
-        static $sizes_all = NULL; // cache this - speed things up
-        if ( NULL === $sizes_all) {
-            $sizes_all = array_merge(self::getSizesWp(), self::getSizesCustom());
-        }
-        return $sizes_all;
+    public static function getAllImageSizes( $include_site_icon = FALSE ) {
+        return array_merge(self::getSizesWp(FALSE,$include_site_icon), self::getSizesCustom());
     }
 
 
@@ -207,9 +224,7 @@ class ZUI_WpAdditionalImageSizes {
      * @return      array
     */
     public static function addSizesToWpIntermediateSizes($sizes) {
-        $sizes_custom = self::getSizesCustom();
-        $sizes_custom = array_merge($sizes, array_keys($sizes_custom) );
-        return $sizes_custom;
+        return self::$skipAddSizesToWpIntermediateSizes ? $sizes : array_merge($sizes, array_keys( self::getSizesCustom() ) );
     }
 
 
@@ -345,6 +360,7 @@ class ZUI_WpAdditionalImageSizes {
         // Necessary for all
         $variables['all_image_sizes'] = self::getAllImageSizes();
         $variables['sizes_custom'] = self::getSizesCustom();
+        $variables['sizes_wp'] = self::getSizesWp(FALSE,TRUE);
         // Give it back
         return $variables;
     }
@@ -435,7 +451,7 @@ class ZUI_WpAdditionalImageSizes {
                         if (!empty($_wp_additional_image_sizes)) {
                             foreach ($_wp_additional_image_sizes as $key => $value) {
                                 ?>
-                    <tr class="alternate iedit" id="<?php echo $key; ?>" title="Additional uneditable sizes added by another plugin or theme via set_post_thumbnail_size() or add_image_size(). These sizes are ignored while creating or deleting sizes with this plugin.">
+                    <tr class="alternate iedit" id="<?php echo $key; ?>" title="This is an additional uneditable size added by another plugin or theme via set_post_thumbnail_size() or add_image_size(). These sizes are ignored while creating or deleting sizes with this plugin.">
                         <th class="check-column" scope="row"></th>
                         <td><em><?php echo $key; ?></em></td>
                         <td><em><?php
@@ -455,8 +471,35 @@ class ZUI_WpAdditionalImageSizes {
                             <?php
                             } // End display custom sizes
                         } // End if !empty
-                            ?>
 
+                        // CLUMSY duplicate code - same as above - but not sure what to do with this yet but we need to acknowledge and be aware of these
+                        if (!empty($sizes_wp)) {
+                            foreach ($sizes_wp as $key => $value) {
+                                ?>
+                    <tr class="alternate iedit" id="<?php echo $key; ?>" title="This is a default WordPress thumbnail size. Some of these can be configured in your site's 'Settings' section under 'Media'">
+                        <th class="check-column" scope="row"></th>
+                        <td><em><?php echo $key; ?></em></td>
+                        <td><em><?php
+                            if (!empty($value['size_w']))
+                                echo "{$value['size_w']}px";
+                            else
+                                echo "<abbr title='proportional'>&prop;</abbr>";
+                        ?></em></td>
+                        <td><em><?php
+                            if (!empty($value['size_h']))
+                                echo "{$value['size_h']}px";
+                            else
+                                echo "<abbr title='proportional'>&prop;</abbr>";
+                        ?></em></td>
+                        <td><em><?php echo ($value['crop']) ? 'crop' : ''; ?></em></td>
+                    </tr>
+                            <?php
+                            } // End display custom sizes
+                        } // End if !empty
+                            ?>
+                    
+                    
+                    
                     <tr class="alternate iedit form-table">
                         <th class="manage-column column-author" scope="col"><strong><label for="ais_new_size">New:</label></strong></th>
                         <td><strong><input type="text" name="ais_size_name[0]" id="ais_new_size" value="<?php echo (isset($messages['errors']) && isset($_POST['ais_size_name'][0])) ? $_POST['ais_size_name'][0] : ''; ?>" /></strong></td>
@@ -473,7 +516,7 @@ class ZUI_WpAdditionalImageSizes {
             <p>
                 When you add an additional image size that size is automatically created for all NEW images you upload.  <br />
                 After creating new image sizes above you need to create the missing image sizes.  <br />
-                This feature will also create new sizes for the <a href="options-media.php">predefined WordPress image sizes</a> (thumbnail, medium, large) if you have edited those.
+                This feature will also create new sizes for the <a href="options-media.php">predefined WordPress image sizes</a> (<?php echo self::getSizesWp(true) ?>) if you have edited those.
             </p>
             <form method="post" action="" id="form_create_sizes" class="aisz_settings">
                 <p class="submit">
@@ -495,9 +538,7 @@ class ZUI_WpAdditionalImageSizes {
                             <option value="custom_only"<?php if ('custom_only' == $sizes_to_check) echo " selected='selected'"; ?>>Custom sizes only</option>
                             <option value="wordpress_only"<?php if ('wordpress_only' == $sizes_to_check) echo " selected='selected'"; ?>>WordPress sizes only</option>
                             <?php foreach ($all_image_sizes as $size => $values) {
-                                echo "{$size} == {$sizes_to_check}<br />";
-                                $selected = ($size == $sizes_to_check)  ? " selected='selected'"
-                                                                        : "";
+                                $selected = ($size == $sizes_to_check)  ? " selected='selected'" : "";
                                 echo "<option value='{$size}'{$selected}>{$size}</option>";
                             } ?>
                         </select>
@@ -536,7 +577,7 @@ class ZUI_WpAdditionalImageSizes {
                             <input type="checkbox" name="replace_sizes" id="replace_sizes" value="1" <?php if ($replace_sizes) echo "checked='checked' "; ?> />
                             <label for="replace_sizes">Replace WordPress sizes</label> <br />
                             <em>
-                                There is no easy way to remove WordPress 'thumbnail', 'medium', and 'large' sizes except by deleting them while we create
+                                There is no easy way to remove WordPress sizes (<?php echo self::getSizesWp(true) ?>) except by deleting them while we create
                                 the new size. If this box is checked when making new predefined WordPress image sizes the old image will be deleted,
                                 ostensibly replacing that image size.
                             </em>
@@ -655,7 +696,7 @@ class ZUI_WpAdditionalImageSizes {
         // Third possibility, the user wants to add a new size, or delete an exising one. First, we'll
         // initialize some variables:
         $sizes_custom = self::getSizesCustom();
-        $sizes_wp = self::getSizesWp();
+        $sizes_wp = self::getSizesWp( FALSE, TRUE );
 
         // Add a size
         if ( isset($_POST['ais_size_name']) ) { // Must have a $_POST to do this
@@ -797,7 +838,7 @@ class ZUI_WpAdditionalImageSizes {
                 break;
                 case "wordpress_only":
                     $sizes_to_check = $sizes_wp;
-                    $messages['success'][] = 'Checked WordPress sizes (thumbnail, medium, large) only.';
+                    $messages['success'][] = 'Checked WordPress sizes (' . self::getSizesWp(true) . ') only.';
                 break;
                 default:
                     $sizes_to_check = array_intersect_key(self::getSizesCustom(), array($_POST['sizes_to_check'] => array())); // This is super sloppy but for now there can be only one
@@ -806,9 +847,9 @@ class ZUI_WpAdditionalImageSizes {
             }
         } else if ( isset($_POST['sizes_to_check']) && 'all' == $_POST['sizes_to_check'] ) {
             $sizes_to_check = self::getAllImageSizes();
-            $messages['success'][] = 'Checked all custom and WordPress (thumbnail, medium, large) image sizes.';
+            $messages['success'][] = 'Checked all custom and WordPress (' . self::getSizesWp(true) . ') image sizes.';
         } else if ( isset($_POST['delete_images_for_deleted_sizes']) ) {
-            $sizes_to_check = self::getAllImageSizes();
+            $sizes_to_check = self::getAllImageSizes(TRUE);
             $messages['success'][] = 'Checked all images metadata.';
         }
 
